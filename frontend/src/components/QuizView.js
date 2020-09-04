@@ -49,12 +49,12 @@ class QuizView extends Component {
 
     $.ajax({
       url: '/quizzes', //TODO: update request URL
-      type: "POST",
+      type: "POST", 
       dataType: 'json',
       contentType: 'application/json',
       data: JSON.stringify({
         previous_questions: previousQuestions,
-        quiz_category: this.state.quizCategory
+        quiz_category: this.state.quizCategory.id
       }),
       xhrFields: {
         withCredentials: true
@@ -111,8 +111,8 @@ class QuizView extends Component {
                       key={id}
                       value={id}
                       className="play-category"
-                      onClick={() => this.selectCategory({type:this.state.categories[id], id})}>
-                      {this.state.categories[id]}
+                      onClick={() => this.selectCategory({type:this.state.categories[id].type, id})}>
+                      {this.state.categories[id].type}
                     </div>
                   )
                 })}

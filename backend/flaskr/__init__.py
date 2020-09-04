@@ -1,4 +1,5 @@
 import os
+import sys
 from flask import Flask, request, abort, jsonify,send_from_directory, safe_join
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -53,6 +54,7 @@ def create_app(test_config=None):
   def get_questions():
     page = request.args.get('page',1, type=int)
     all_questions = Question.query.all()
+    total_questions = len(all_questions)
     start = (page - 1) * QUESTIONS_PER_PAGE
     end = start + QUESTIONS_PER_PAGE
     questions = all_questions[start:end]
@@ -62,7 +64,7 @@ def create_app(test_config=None):
     current_category=1
     return jsonify(
       questions=questions, 
-      total_questions=len(questions),
+      total_questions=total_questions,
       categories=categories,
       current_category=current_category
       )
@@ -73,7 +75,13 @@ def create_app(test_config=None):
   TEST: When you click the trash icon next to a question, the question will be removed.
   This removal will persist in the database and when you refresh the page. 
   '''
-
+  @app.route('/questions/<int:id>', methods=["DELETE"])
+  def delete_question(id):
+    question = Question.query.get(id)
+    if not question:
+      abort(404)
+    question.delete()
+    return jsonify(),204
   '''
   @TODO: 
   Create an endpoint to POST a new question, 
@@ -84,7 +92,16 @@ def create_app(test_config=None):
   the form will clear and the question will appear at the end of the last page
   of the questions list in the "List" tab.  
   '''
-
+  @app.route('/questions',methods=["POST"])
+  def add_question():
+    try:
+      data = request.get_json()
+      new_question = Question(**data)
+      new_question.insert()
+    except:
+      print(sys.exc_info())
+      abort(400)
+    return jsonify(),201
   '''
   @TODO: 
   Create a POST endpoint to get questions based on a search term. 
@@ -95,7 +112,7 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
-
+ 
   '''
   @TODO: 
   Create a GET endpoint to get questions based on category. 
@@ -110,6 +127,8 @@ def create_app(test_config=None):
       if not category:
           abort(404) 
       questions = Question.query.filter_by(category=id).all()
+      total_questions = len(questions)
+
       page = request.args.get('page',1, type=int)
       start = (page - 1) * QUESTIONS_PER_PAGE
       end = start + QUESTIONS_PER_PAGE
@@ -118,7 +137,7 @@ def create_app(test_config=None):
 
       return jsonify(
       questions=questions, 
-      total_questions=len(questions),
+      total_questions=total_questions,
       current_category=id
       )  
   '''
@@ -132,7 +151,17 @@ def create_app(test_config=None):
   one question at a time is displayed, the user is allowed to answer
   and shown whether they were correct or not. 
   '''
-
+  @app.route('/quizzes', methods=["POST"])
+  def get_quiz_question():
+    data = request.get_json()
+    cat = int(data['quiz_category'])
+    pre_questions = data['previous_questions']
+    all_questions = Question.query.filter(Question.category==cat).filter(Question.id.notin_(pre_questions)).all()
+    if len(all_questions):
+      question = random.choice(all_questions)
+    else:
+      question=None
+    return jsonify(question = question)
   '''
   @TODO: 
   Create error handlers for all expected errors 
@@ -147,6 +176,15 @@ def create_app(test_config=None):
           }
       ),404
 
+  @app.errorhandler(400)
+  def error_bad_request(error):
+      return jsonify(
+          {
+              'success':False,
+              'message':"bad request"
+          }
+      ),400
+
   @app.errorhandler(422)
   def error_not_found(error):
       return jsonify(
@@ -155,6 +193,14 @@ def create_app(test_config=None):
               'message':"unprocessable"
           }
       ),422
+  @app.errorhandler(500)
+  def error_internal(error):
+      return jsonify(
+          {
+              'success':False,
+              'message':"Internal Error has happended"
+          }
+      ),500
   @app.route('/images/<path:filename>')
   def serve_image(filename):   
     return app.send_static_file(filename)
