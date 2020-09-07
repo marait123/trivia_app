@@ -112,11 +112,12 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
-  # NOTE: fix the pagination problem
   @app.route('/questions/search',methods=["POST"])
   def search_questions():
     data = request.get_json()
-    search_term = f"%{data['searchTerm']}%"
+    if not data.get('searchTerm'):
+      abort(422)
+    search_term = f"%{data.get('searchTerm')}%"
     total_questions = Question.query.filter(Question.question.ilike(search_term)).all()
     page = request.args.get('page',1, type=int)
     start = (page - 1) * QUESTIONS_PER_PAGE
@@ -170,8 +171,12 @@ def create_app(test_config=None):
   @app.route('/quizzes', methods=["POST"])
   def get_quiz_question():
     data = request.get_json()
-    cat = int(data['quiz_category'])
-    pre_questions = data['previous_questions']
+    if not data:
+      abort(422)
+    if not data.get('quiz_category'):
+      abort(422)
+    cat = int(data.get('quiz_category'))
+    pre_questions = data.get('previous_questions',[])
     all_questions = Question.query.filter(Question.category==cat).filter(Question.id.notin_(pre_questions)).all()
     if len(all_questions):
       question = random.choice(all_questions)

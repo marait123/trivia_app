@@ -24,14 +24,11 @@ class QuestionView extends Component {
     this.getQuestions();
   }
 
-  getQuestions = () => {
-    if(this.state.endpoint == '/questions/search'){
-      this.submitSearch(this.state.searchTerm, this.state.page)
-      return;
-    }
+  getQuestions = (page=1) => {
+
     $.ajax({
       type: this.state.method,
-      url: `${this.state.endpoint}?page=${this.state.page}`, //TODO: update request URL
+      url: `${this.state.endpoint}?page=${page}`, //TODO: update request URL
       // url: `/questions?page=${this.state.page}`, //TODO: update request URL
       success: (result) => {
         // alert(result.c ategories[0].svg)
@@ -48,9 +45,19 @@ class QuestionView extends Component {
       }
     })
   }
-
+  choose_questions(page){
+    if(this.state.endpoint == '/questions/search'){
+      this.submitSearch(this.state.searchTerm, this.state.page)
+      return;
+    }else if(this.state.endpoint=='/questions'){
+      this.getQuestions(page);
+    }
+    else if(this.state.endpoint==`/categories/${this.state.currentCategory}/questions`){
+      this.getByCategory(this.state.currentCategory,page);
+    }
+  }
   selectPage(num) {
-    this.setState({page: num}, () => this.getQuestions());
+    this.setState({page: num}, () => this.choose_questions(num));
   }
 
   createPagination(){
@@ -71,10 +78,10 @@ class QuestionView extends Component {
     return pageNumbers;
   }
 
-  getByCategory= (id) => {
+  getByCategory= (id,page=1) => {
     this.setState({endpoint:`/categories/${id}/questions`,method:"GET"})
     $.ajax({
-      url: `/categories/${id}/questions`, //TODO: update request URL
+      url: `/categories/${id}/questions?page=${page}`, //TODO: update request URL
       type: "GET",
       success: (result) => {
         this.setState({

@@ -88,7 +88,65 @@ class TriviaTestCase(unittest.TestCase):
         res = self.client().delete('/questions/101')
         self.assertEqual(res.status_code, 404)
 
+    def test_add_one_question_ok(self):
+        res = self.client().post('/questions',json={
+            'question':'how old is the pyramids in years?',
+            'answer':'4000',
+            'category':'1',
+            'difficulty':'2'
+        })
+
+        self.assertEqual(res.status_code, 201)
         
+    def test_add_one_question_400(self):
+        res = self.client().post('/questions',json={
+            'question':'how old is the pyramids in years?',
+            'answer':'4000',
+            'category':'1',
+            'difficulty':'2',
+            'anything':True
+        })
+
+        self.assertEqual(res.status_code, 400)
+    def test_search_questions_ok(self):
+        res = self.client().post('/questions/search',json={
+            'searchTerm':'how'
+        })
+        data = json.loads(res.data)
+        self.assertEqual(res.status_code,200)
+        self.assertEqual(data['total_questions'],1)
+
+    def test_search_questions_422(self):
+        res = self.client().post('/questions/search',json={
+            'searchTerm_fail':'how'
+        })
+        self.assertEqual(res.status_code,422)
+
+    def test_get_questions_by_category_ok(self):
+        res = self.client().get('/categories/1/questions')
+        data = json.loads(res.data)
+        self.assertEqual(data['total_questions'],1)
+        self.assertEqual(res.status_code,200)
+
+    def test_get_questions_by_category_404(self):
+        res = self.client().get('/categories/100/questions')
+        self.assertEqual(res.status_code,404)
+    def test_get_quiz_question_ok(self):
+        res = self.client().post('/quizzes',json={
+            'quiz_category':1,
+            'previous_questions':[]
+        })
+
+        data = json.loads(res.data)
+
+        self.assertTrue(data['question'])
+        self.assertEqual(res.status_code, 200)
+
+    def test_get_quiz_question_422(self):
+        res = self.client().post('/quizzes')
+        self.assertEqual(res.status_code, 422)
+
+    
 # Make the tests conveniently executable
 if __name__ == "__main__":
     unittest.main()
