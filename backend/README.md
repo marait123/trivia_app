@@ -33,7 +33,7 @@ This will install all of the required packages we selected within the `requireme
 ## Database Setup
 With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
 ```bash
-psql trivia < trivia.psql
+psql trivia { trivia.psql
 ```
 
 ## Running the server
@@ -55,10 +55,10 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 Endpoints
 GET '/categories'
 GET '/questions'
-DELETE '/questions/<id>'
+DELETE '/questions/{id}'
 POST '/questions'
 POST '/questions/search'
-GET '/categories/<id>/questions'
+GET '/categories/{id}/questions'
 POST '/quizzes'
 
 GET '/categories'
@@ -113,10 +113,10 @@ GET '/questions'
 - status:200
 
 
-DELETE '/questions/<id>'
-- Deletes an object from the database with id = <id>
+DELETE '/questions/id'
+- Deletes an question from the database with id = id
 - Request Arguments:
-    -id -> the id of the question
+    -id -} the id of the question
 - Query Arguments: None
 - Request Body: None
 - Returns: Nothing
@@ -165,10 +165,10 @@ POST '/questions/search'
 - status 200
 
 
-GET '/categories/<id>/questions'
-- Fetches questions from the database the belong to category with id=<id>
+GET '/categories/{id}/questions'
+- Fetches questions from the database the belong to category with id={id}
 - Request Arguments:
-    - <id> = the id of the category the questions belong to    
+    - {id} = the id of the category the questions belong to    
 - Query Arguments:
     -page = the page number
 - Request Body:
