@@ -26,9 +26,9 @@ This will install all of the required packages we selected within the `requireme
 
 - [Flask](http://flask.pocoo.org/)  is a lightweight backend microservices framework. Flask is required to handle requests and responses.
 
-- [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we'll use handle the lightweight sqlite database. You'll primarily work in app.py and can reference models.py. 
+- [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM we"ll use handle the lightweight sqlite database. You"ll primarily work in app.py and can reference models.py. 
 
-- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we'll use to handle cross origin requests from our frontend server. 
+- [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension we"ll use to handle cross origin requests from our frontend server. 
 
 ## Database Setup
 With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
@@ -53,67 +53,71 @@ Setting the `FLASK_ENV` variable to `development` will detect file changes and r
 Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` directory and the `__init__.py` file to find the application. 
 
 Endpoints
-- GET '/categories'
-- GET '/questions'
-- DELETE '/questions/{id}'
-- POST '/questions'
-- POST '/questions/search'
-- GET '/categories/{id}/questions'
-- POST '/quizzes'
+- GET "/categories"
+- GET "/questions"
+- DELETE "/questions/{id}"
+- POST "/questions"
+- POST "/questions/search"
+- GET "/categories/{id}/questions"
+- POST "/quizzes"
 
-GET '/categories'
+GET "/categories"
 - Fetches an array of category objects with {id,type} properties from the database
 - Request Arguments: None
 - Query Arguments: None
 - Request Body: None
 - Returns: an object with a categories property equal to array of category objects with {id,type} properties
-- Example Response: 
+- Example Response:
+```json
    { 
-    'categories':[
+    "categories":[
         {
-            'id':1,
-            'type':'history'
+            "id":1,
+            "type":"history"
         },
         {            
-            'id':2,
-            'type':'sports'
+            "id":2,
+            "type":"sports"
         }
     ]
    }
+```
 -status: 200
 
-GET '/questions'
+GET "/questions"
 - Fetches an array of question objects with {id,question,answer,category,difficulty} properties
 - Request Arguments: None
 - Query Arguments: 
     -page = the page number
 - Request Body: None
 - Returns: an object containing {questions, categories, total_questions, current_category} properties
-- Example Response: 
+- Example Response:
+```json
     {
-        'questions':[
+        "questions":[
             {
-                'id':1,
-                'question':'who?',
-                'answer':'me',
-                'category':1,
-                'difficulty':1,
-                'type':'history'
+                "id":1,
+                "question":"who?",
+                "answer":"me",
+                "category":1,
+                "difficulty":1,
+                "type":"history"
             }
         ], 
-        'categories':[
+        "categories":[
             {
-                'id':1,
-                'type':'history'
+                "id":1,
+                "type":"history"
             }
         ],
-        'total_questions':1,
-        'current_category':1
+        "total_questions":1,
+        "current_category":1
     }
+```
 - status:200
 
 
-DELETE '/questions/id'
+DELETE "/questions/id"
 - Deletes an question from the database with id = id
 - Request Arguments:
     -id -} the id of the question
@@ -122,7 +126,7 @@ DELETE '/questions/id'
 - Returns: Nothing
 -status 204
 
-POST '/questions'
+POST "/questions"
 - Adds a question to the database
 - Request Arguments:None
 - Query Arguments: None
@@ -134,7 +138,7 @@ POST '/questions'
 - Returns: Nothing
 -status 201
 
-POST '/questions/search'
+POST "/questions/search"
 - Adds a question to the database
 - Request Arguments:None
 - Query Arguments: None
@@ -142,6 +146,7 @@ POST '/questions/search'
     - searchTerm : part of the question string to look for
 - Returns: an object with {questions, total_questions,current_category,categories} properties
 - Example Response
+```json
 {
     "categories": [
         {
@@ -162,10 +167,11 @@ POST '/questions/search'
     ],
     "total_questions": 1
 }
+```
 - status 200
 
 
-GET '/categories/{id}/questions'
+GET "/categories/{id}/questions"
 - Fetches questions from the database the belong to category with id={id}
 - Request Arguments:
     - {id} = the id of the category the questions belong to    
@@ -174,6 +180,7 @@ GET '/categories/{id}/questions'
 - Request Body:
 - Returns: an object with {questions, total_questions,current_category,categories} properties
 - Example Response
+```json
 {
     "categories": [
         {
@@ -194,10 +201,11 @@ GET '/categories/{id}/questions'
     ],
     "total_questions": 1
 }
+```
 - status 200
 
-POST '/quizzes'
-- Fetches a random question from the database that doesn't belong in the array of previous questions
+POST "/quizzes"
+- Fetches a random question from the database that doesn"t belong in the array of previous questions
 - Request Arguments:None 
 - Query Arguments: None
 - Request Body:
@@ -205,6 +213,7 @@ POST '/quizzes'
     - previous_questions = the array of the questions to be excluded when selecting the random quesion
 - Returns: an object with {question} property
 - Example Response
+```json
 {  
     "question":{
             "answer": "abu_dahb",
@@ -215,6 +224,7 @@ POST '/quizzes'
             "type": "history"
             }
 }
+```
 - status 200
 
 
