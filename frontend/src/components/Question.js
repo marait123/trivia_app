@@ -41,7 +41,7 @@ class Question extends Component {
         <div className="show-answer button"
             onClick={() => this.flipVisibility()}>
             {this.state.visibleAnswer ? 'Hide' : 'Show'} Answer
-          </div>
+        </div>
         <div className="answer-holder">
           <span style={{"visibility": this.state.visibleAnswer ? 'visible' : 'hidden'}}>Answer: {answer}</span>
         </div>
