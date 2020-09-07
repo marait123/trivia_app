@@ -112,7 +112,21 @@ def create_app(test_config=None):
   only question that include that string within their question. 
   Try using the word "title" to start. 
   '''
- 
+  # NOTE: fix the pagination problem
+  @app.route('/questions/search',methods=["POST"])
+  def search_questions():
+    data = request.get_json()
+    search_term = f"%{data['searchTerm']}%"
+    total_questions = Question.query.filter(Question.question.ilike(search_term)).all()
+    page = request.args.get('page',1, type=int)
+    start = (page - 1) * QUESTIONS_PER_PAGE
+    end = start + QUESTIONS_PER_PAGE
+    
+    categories = Category.query.all()
+    categories = [cat.format() for cat in categories]
+    found_questions = total_questions[start:end]
+    found_questions = [ fq.format() for fq in found_questions]
+    return jsonify(questions = found_questions,total_questions = len(total_questions), current_category=0,categories=categories)
   '''
   @TODO: 
   Create a GET endpoint to get questions based on category. 
@@ -134,11 +148,13 @@ def create_app(test_config=None):
       end = start + QUESTIONS_PER_PAGE
       questions = questions[start:end]
       questions = [q.format() for q in questions]
-
+      categories = Category.query.all()
+      categories = [cat.format() for cat in categories]
       return jsonify(
       questions=questions, 
       total_questions=total_questions,
-      current_category=id
+      current_category=id,
+      categories=categories
       )  
   '''
   @TODO: 
@@ -161,7 +177,8 @@ def create_app(test_config=None):
       question = random.choice(all_questions)
     else:
       question=None
-    return jsonify(question = question)
+
+    return jsonify(question = question.format())
   '''
   @TODO: 
   Create error handlers for all expected errors 

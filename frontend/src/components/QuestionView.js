@@ -14,6 +14,9 @@ class QuestionView extends Component {
       totalQuestions: 0,
       categories: {},
       currentCategory: null,
+      endpoint:'/questions',
+      method:'GET',
+      searchTerm:''
     }
   }
 
@@ -22,9 +25,14 @@ class QuestionView extends Component {
   }
 
   getQuestions = () => {
+    if(this.state.endpoint == '/questions/search'){
+      this.submitSearch(this.state.searchTerm, this.state.page)
+      return;
+    }
     $.ajax({
-      url: `/questions?page=${this.state.page}`, //TODO: update request URL
-      type: "GET",
+      type: this.state.method,
+      url: `${this.state.endpoint}?page=${this.state.page}`, //TODO: update request URL
+      // url: `/questions?page=${this.state.page}`, //TODO: update request URL
       success: (result) => {
         // alert(result.c ategories[0].svg)
         this.setState({
@@ -64,6 +72,7 @@ class QuestionView extends Component {
   }
 
   getByCategory= (id) => {
+    this.setState({endpoint:`/categories/${id}/questions`,method:"GET"})
     $.ajax({
       url: `/categories/${id}/questions`, //TODO: update request URL
       type: "GET",
@@ -81,9 +90,11 @@ class QuestionView extends Component {
     })
   }
 
-  submitSearch = (searchTerm) => {
+  submitSearch = (searchTerm,page=1) => {
+    this.setState({searchTerm:searchTerm, page:page})
+    this.setState({endpoint:'/questions/search',method:"POST"})
     $.ajax({
-      url: `/questions/search`, //TODO: update request URL
+      url: `/questions/search?page=${page}`, //TODO: update request URL
       type: "POST",
       dataType: 'json',
       contentType: 'application/json',
