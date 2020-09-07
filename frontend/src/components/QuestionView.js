@@ -29,9 +29,7 @@ class QuestionView extends Component {
     $.ajax({
       type: this.state.method,
       url: `${this.state.endpoint}?page=${page}`, //TODO: update request URL
-      // url: `/questions?page=${this.state.page}`, //TODO: update request URL
       success: (result) => {
-        // alert(result.c ategories[0].svg)
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,

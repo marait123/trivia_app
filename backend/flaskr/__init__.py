@@ -159,10 +159,6 @@ def create_app(test_config=None):
               'message':"Internal Error has happended"
           }
       ),500
-  @app.route('/images/<path:filename>')
-  def serve_image(filename):   
-    return app.send_static_file(filename)
-
   return app
 
     

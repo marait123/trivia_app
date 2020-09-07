@@ -71,7 +71,7 @@ class Category(db.Model):
   id = Column(Integer, primary_key=True)
   type = Column(String)
   questions = relationship("Question", backref="categories", lazy=True)
-  svg = Column(String, default = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/SVG_logo_h.svg/1200px-SVG_logo_h.svg.png")
+
   def __init__(self, type):
     self.type = type
 
