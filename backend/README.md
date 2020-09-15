@@ -231,9 +231,8 @@ POST "/quizzes"
 
 
 ## Testing
-To run the tests, run
-NOTE: mock data is supplied in test_flaskr.py 
-[you need not supply it]
+To run the tests, run.  
+***NOTE: mock data is supplied in test_flaskr.py  [you need not supply it]***
 ```
 dropdb trivia_test
 createdb trivia_test
